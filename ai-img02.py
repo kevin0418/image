@@ -28,8 +28,11 @@ with st.sidebar:
 st.subheader("📸 이미지 분석 & 학습 도구 by Kevin")
 # st.title("📸 이미지 분석 & 결과 저장")
 
-uploaded_file = st.file_uploader("이미지 파일을 선택하세요", type=["jpg", "png", "jpeg"])
-
+# uploaded_file = st.file_uploader("이미지 파일을 선택하세요", type=["jpg", "png", "jpeg"])
+uploaded_file = st.file_uploader(
+    "이미지 파일을 선택하세요", 
+    type=["jpg", "jpeg", "png", "JPG", "JPEG", "PNG", "image/png", "image/jpeg"]
+)
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
     st.image(image, caption="업로드된 이미지", use_container_width=True)
