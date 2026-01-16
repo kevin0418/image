@@ -15,28 +15,44 @@ if "analysis_result" not in st.session_state:
     st.session_state.analysis_result = None
 
 # 3. 사이드바 - API 키 설정
-with st.sidebar:
-    st.header("🔑 설정")
-    # --- 2. API 키 설정 ---
-    api_key = st.secrets["api_keys"].get("gemini_api_key", "")
-    # api_key = st.text_input("Google Gemini API Key를 입력하세요", type="password")
+# with st.sidebar:
+#     st.header("🔑 설정")
+#     # --- 2. API 키 설정 ---
+api_key = st.secrets["api_keys"].get("gemini_api_key", "")
+#     # api_key = st.text_input("Google Gemini API Key를 입력하세요", type="password")
     
-    # 저장 버튼 디자인을 위한 안내
-    st.info("분석이 완료되면 하단에 '파일로 저장' 버튼이 나타납니다.")
+#     # 저장 버튼 디자인을 위한 안내
+#     st.info("분석이 완료되면 하단에 '파일로 저장' 버튼이 나타납니다.")
 
 # 4. 메인 화면 UI
 st.subheader("📸 이미지 분석 & 학습 도구 by Kevin")
 # st.title("📸 이미지 분석 & 결과 저장")
 
 # uploaded_file = st.file_uploader("이미지 파일을 선택하세요", type=["jpg", "png", "jpeg"])
-uploaded_file = st.file_uploader(
-    "이미지 파일을 선택하세요", 
-    type=["jpg", "jpeg", "png", "JPG", "JPEG", "PNG", "image/png", "image/jpeg"]
-)
+# uploaded_file = st.file_uploader(
+#     "이미지 파일을 선택하세요", 
+#     type=["jpg", "jpeg", "png", "JPG", "JPEG", "PNG", "image/png", "image/jpeg"])
+uploaded_file = st.file_uploader("이미지 파일을 선택하세요", type=None)
+
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
-    st.image(image, caption="업로드된 이미지", use_container_width=True)
+    # st.image(image, caption="업로드된 이미지", use_container_width=True)
     
+    # 2. 파일 이름에서 확장자를 추출하여 이미지인지 확인
+    file_name = uploaded_file.name.lower()
+    allowed_extensions = ('.jpg', '.jpeg', '.png')
+    
+    if file_name.endswith(allowed_extensions):
+        # 이미지 파일이 맞으면 로직 실행
+        image = Image.open(uploaded_file)
+        st.image(image, caption="업로드된 이미지", use_container_width=True)
+
+            # 이후 분석 버튼 및 로직...
+    else:
+        st.error("이미지 파일(.jpg, .png)만 업로드 가능합니다.")
+        uploaded_file = None
+
+
     # 분석 버튼
     if st.button("🔍 분석 시작하기", type="primary"):
         if not api_key:
@@ -65,6 +81,7 @@ if uploaded_file is not None:
                     st.error(f"오류 발생: {e}")
 
 # 5. 결과 출력 및 저장 버튼
+st.info("분석이 완료되면 하단에 '파일로 저장' 버튼이 나타납니다.")
 if st.session_state.analysis_result:
     st.markdown("---")
     st.subheader("📝 분석 결과")
